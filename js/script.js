@@ -68,6 +68,7 @@ colorMenuDefault.setAttribute("selected", true)
 colorMenuDefault.setAttribute("disabled", true) 
 
 colorOptions.prepend(colorMenuDefault)
+
 //start by hiding everything
 resetColorOptionMenu()
 
@@ -102,7 +103,9 @@ function setColorOptionMenu(regex){
 }
 
 //the design menu, add event listener
-
+//regex is used here in case someone wants to add addtional color options to the menu,
+// as long as they still define the style options the same, no changes to the code are
+// needed to find and appropriately select the new colors 
 designOptions.addEventListener("change", (e) => {
     let punex = RegExp(/Pun/)
     let heartex = RegExp(/♥/) //quite confused as to why I need to copypasta a heart into here when I have the code, regex pal seems to be able to find that heart by the &#9829;
@@ -133,10 +136,10 @@ confCostSpan.classList.add('is-hidden')
 
 activities.append(confCostSpan)
 
-for(let i = 0; i < activitiesCheckboxes.length; i++){
+for(let i = 0; i < activitiesCheckboxes.length; i++){ //loop through all the checkboxes and add an event handler to them
     activitiesCheckboxes[i].addEventListener("change", (e) => {
         confSessionConflicts()
-        confCalcCost()
+        confCalcCost() //its possible that both of these functions could have been combined into one, however for clarity and debugging I have kept them seperate
     })
 }
 //calculate the cost of the event per selected items, and if the cost is greater than zero(at least 1 item selected) display the total cost
@@ -162,12 +165,12 @@ function confSessionConflicts(){
     let dats = []
     for(let i = 0; i < activitiesCheckboxes.length; i++){
         if( activitiesCheckboxes[i].checked === true ){
-            dats.push( activitiesCheckboxes[i].dataset.dayAndTime )
+            dats.push( activitiesCheckboxes[i].dataset.dayAndTime ) //build array of currently selected items
         }
     }
     for(let i = 0; i < activitiesCheckboxes.length; i++){
-        if( activitiesCheckboxes[i].checked === false ){
-            if( dats.indexOf(activitiesCheckboxes[i].dataset.dayAndTime ) != -1 ){
+        if( activitiesCheckboxes[i].checked === false ){ //check the other items on the list to see if a conflict exists
+            if( dats.indexOf(activitiesCheckboxes[i].dataset.dayAndTime ) != -1 ){ 
                 activitiesCheckboxes[i].setAttribute('disabled', true)
             }
             else{
@@ -261,14 +264,11 @@ creditCardNum.addEventListener('blur', (e) => {
     if( !isNotBlank( e.target.value ) ){
         creditCardNum.classList.add('error')
         creditCardNum.labels[0].classList.add('empty')
-
     }
     else if( !isthirteenSixteen(e.target.value) ){
         creditCardNum.classList.add('error')
         creditCardNum.labels[0].classList.add('invalidCCnum')
-
     }
-
 })
 creditCardZip.addEventListener('blur', (e) => {
     creditCardZip.classList.remove('error')
@@ -276,14 +276,11 @@ creditCardZip.addEventListener('blur', (e) => {
     if( !isNotBlank( e.target.value ) ){
         creditCardZip.classList.add('error')
         creditCardZip.labels[0].classList.add('empty')
-
     }
     else if( !isFiveZipCode(e.target.value) ){
         creditCardZip.classList.add('error')
         creditCardZip.labels[0].classList.add('invalidZip')
-
     }
-
 })
 creditCardCVV.addEventListener('blur', (e) => {
     creditCardCVV.classList.remove('error')
@@ -291,19 +288,16 @@ creditCardCVV.addEventListener('blur', (e) => {
     if( !isNotBlank( e.target.value ) ){
         creditCardCVV.classList.add('error')
         creditCardCVV.labels[0].classList.add('empty')
-
     }
     else if( !isThreeDigits(e.target.value) ){
         creditCardCVV.classList.add('error')
         creditCardCVV.labels[0].classList.add('invalidCVV')
-
     }
-
 })
 
 //basic validation function, if it only contains white space, it should be considered blank
 function isNotBlank(val){
-    if(val.length > 0){
+    if(val.length > 0){ //if there really is nothing here, then just skip the regex and go straight to false
         let regex = RegExp(/^[\s]+$/)
         return !regex.test(val)
     }
@@ -357,7 +351,7 @@ function atLeastOneChecked(collection){
     for(let i = 0; i < collection.length; i++){
         if(collection[i].checked === true){
             bool = true
-            break
+            break //as soon as we find a checked box, we can stop the loop
         }
     }
     return bool
@@ -367,15 +361,9 @@ function isShirtSelected(val){
     return val != ''
 }
 
-// //is this element visible?
-// function showMeYourStyle(elemId){
-//     let style = window.getComputedStyle(elemId)
-//     return !(style.display === 'none')
-// }
-
 //should the submit button be disabled? 
 //if the name is blank: yes
-//if the email is both blank and invalid: yes
+//if the email is either blank or invalid: yes
 //if no activities have been selected: yes
 //if payment type credit card is selected but the number is not between 13 and 16 digits: yes
 //if payment type credit card is selected but the zip code is not 5 digits: yes
@@ -383,8 +371,8 @@ function isShirtSelected(val){
 //else: no
 //We'll add an event listioner to the submit button to prevent submission should any of the above evaluate to true
 submitButton.addEventListener('click', (e) => {
-    e.preventDefault()
-
+    
+    //build a referenceable object with the state of each validation check to loop through later
     let errorState = {
         name: isNotBlank(name.value),
         emailAddress: isNotBlank(emailAddress.value) && isEmail(emailAddress.value),
@@ -402,13 +390,19 @@ submitButton.addEventListener('click', (e) => {
 
     let keys = Object.keys(errorState)
     for(let i = 0; i < keys.length; i++){
-        if(!errorState[keys[i]]){
-            eval(keys[i]).classList.add('error')
-            eval(keys[i]).focus()
-            eval(keys[i]).blur()
+        if(!errorState[keys[i]]){  //is the test(s) above did not pass, they would be false, not(!) this value
+            eval(keys[i]).classList.add('error') //give the item our helper error class
+            eval(keys[i]).focus() //focus the item with the error state
+            eval(keys[i]).blur() //blur it to help pop out the helper error message texts
+            
+            if(keys[i] == 'colorOptions'){ //if the user didn't select a t shirt let them know
+                popUpModal()
+            }
+
+            e.preventDefault() //stop the sunmit button from firing it's actions
         }
         else{
-            eval(keys[i]).classList.remove('error')
+            eval(keys[i]).classList.remove('error') //if this item passed its validation check, remove the error class
         }
     }
 
@@ -417,5 +411,34 @@ submitButton.addEventListener('click', (e) => {
     
 })
 
+
+//in case someone doesn't select a T-Shirt design/color let them know
+//its hard to point someone to a hidden selection box as the missing item
+function popUpModal(){
+    let clearDoc = document.getElementById('modal')
+    if(clearDoc){
+        clearDoc.remove()
+    }
+    const modal = document.createElement('div')
+    const modalBox = document.createElement('div')
+    const modalMsg = document.createElement('p')
+    const closeBtn = document.createElement('span')
+    modal.id = 'modal'
+    modal.classList.add('popup')
+    modalBox.classList.add('popup-content')
+    closeBtn.id = 'closeModal'
+    closeBtn.innerHTML = '&times;'
+    modalMsg.innerHTML = 'Oops! Looks like you forgot to select a T-Shirt. <br>We\'d hate for you to miss out on your loot'
+
+    modalBox.append(closeBtn)
+    modalBox.append(modalMsg)
+    modal.append(modalBox)
+
+    closeBtn.addEventListener('click', (e) => {
+        modal.style.display = 'none'
+    })
+    document.body.append(modal)
+    modal.style.display = 'block'
+}
 
 
