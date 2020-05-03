@@ -1,0 +1,59 @@
+.error {
+    background: #fae9fb;
+	border: 5px solid rgb(233, 12, 141);
+	border-radius: 3px;
+}
+.error:focus {
+	background: #fff;
+	border-color: rgb(233, 12, 141);
+	transition: border-color .4s, background-color .4s;
+}
+
+.errorBlink {
+    transition: background-color .4s;
+}
+
+.empty::after {
+    content: "Must contain a value";
+    background: #fae9fb;
+	border: 1px solid rgb(233, 12, 141);
+    border-radius: 3px;
+    display: block;
+    width: 10em;
+}
+
+.invalidEmail::after {
+    content: "Unrecognized email format";
+    background: #fae9fb;
+	border: 1px solid rgb(233, 12, 141);
+    border-radius: 3px;
+    display: block;
+    width: 14em;
+}
+
+.invalidCCnum::after {
+    content: "Unrecognized credit card format";
+    background: #fae9fb;
+	border: 1px solid rgb(233, 12, 141);
+    border-radius: 3px;
+    display: block;
+    width: 15em;
+}
+
+.invalidZip::after {
+    content: "Zip codes must be 5 digits";
+    background: #fae9fb;
+	border: 1px solid rgb(233, 12, 141);
+    border-radius: 3px;
+    display: block;
+    width: 10em;
+}
+
+.invalidCVV::after {
+    content: "CVV must be 3 digits";
+    background: #fae9fb;
+	border: 1px solid rgb(233, 12, 141);
+    border-radius: 3px;
+    display: block;
+    width: 10em;
+}
