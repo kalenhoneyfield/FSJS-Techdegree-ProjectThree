@@ -11,12 +11,13 @@
 }
 
 .empty::after {
-    content: "Must contain a value";
+    content: "Looks like you forgot to fill out this box";
     background: #fae9fb;
 	border: 1px solid rgb(233, 12, 141);
     border-radius: 3px;
     display: block;
-    width: 10em;
+    width: auto;
+    text-align: center;
 }
 
 .invalidEmail::after {
@@ -25,7 +26,8 @@
 	border: 1px solid rgb(233, 12, 141);
     border-radius: 3px;
     display: block;
-    width: 14em;
+    width: auto;
+    text-align: center;
 }
 
 .invalidCCnum::after {
@@ -34,7 +36,8 @@
 	border: 1px solid rgb(233, 12, 141);
     border-radius: 3px;
     display: block;
-    width: 15em;
+    width: auto;
+    text-align: center;
 }
 
 .invalidZip::after {
@@ -43,7 +46,8 @@
 	border: 1px solid rgb(233, 12, 141);
     border-radius: 3px;
     display: block;
-    width: 10em;
+    width: auto;
+    text-align: center;
 }
 
 .invalidCVV::after {
@@ -52,7 +56,8 @@
 	border: 1px solid rgb(233, 12, 141);
     border-radius: 3px;
     display: block;
-    width: 10em;
+    width: auto;
+    text-align: center;
 }
 
 /* Much of the below CSS can be found on https://www.w3schools.com/howto/howto_css_modals.asp */

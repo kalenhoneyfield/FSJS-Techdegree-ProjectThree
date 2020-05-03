@@ -45,20 +45,6 @@ jobTitle.addEventListener("change", (e) => {
 });
 
 
-//Until a theme is selected from the “Design” menu, 
-//no color options appear in the “Color” drop down 
-//and the “Color” field reads “Please select a T-shirt theme”.
-
-/*
-    Step 1: Get the color options menu then hide it
-    Step 2: create the default menu item, make sure it is selected, and disabled so the user shouldn't be able to select it (no one wants to get to a conference and have their loot shirt read "Please select a T-shirt theme")
-    Step 3: prepend this item to the menu
-    Step 4: hide all other items on the menu
-    Step 5: Get the design options menu
-    Step 6: add an event listen to this menu
-    Step 7: hide/unhide options that should (not) be shown based on the selected design choices
-*/
-
 colorOptions.classList.add('is-hidden')
 colorOptions.labels[0].classList.add('is-hidden')
 const colorMenuDefault = document.createElement('option')
@@ -180,16 +166,8 @@ function confSessionConflicts(){
     }   
 }
 
-//Display payment sections based on the payment option chosen in the select menu.
-/*
-    Step 1: get payment element, set CC as the selected payment option, disable the "Select Payment Method" option 
-    Step 2: hide all payments options
-    Step 3: show only the payment option that is selected
-*/
-
-
-paymentMenu.options[0].setAttribute('disabled', true)
-paymentMenu.selectedIndex = 1
+paymentMenu.options[0].setAttribute('disabled', true) //by default set the "Select Payment Method" to disabled
+paymentMenu.selectedIndex = 1 //select "Credit card" as the default item
 
 //grab all the payment options and place them into an array so that we can more easily loop through them
 const paymentTypeElementsById = [ 
@@ -361,15 +339,18 @@ function isShirtSelected(val){
     return val != ''
 }
 
-//should the submit button be disabled? 
+//the following event handler described plainly
+//should the submit button's default action be disabled? 
 //if the name is blank: yes
 //if the email is either blank or invalid: yes
+//if 'other job title' is selected and the other job title is blank: yes
 //if no activities have been selected: yes
+//if no shirt is selected: yes
 //if payment type credit card is selected but the number is not between 13 and 16 digits: yes
 //if payment type credit card is selected but the zip code is not 5 digits: yes
 //if payment type credit card is selected but the CVV is not 3 digits: yes
 //else: no
-//We'll add an event listioner to the submit button to prevent submission should any of the above evaluate to true
+//We'll add an event listioner to the submit button to prevent submission should any of the above evaluate to 'false'
 submitButton.addEventListener('click', (e) => {
     
     //build a referenceable object with the state of each validation check to loop through later
@@ -390,7 +371,7 @@ submitButton.addEventListener('click', (e) => {
 
     let keys = Object.keys(errorState)
     for(let i = 0; i < keys.length; i++){
-        if(!errorState[keys[i]]){  //is the test(s) above did not pass, they would be false, not(!) this value
+        if(!errorState[keys[i]]){  //if the test(s) above did not pass, they would be false, not(!) this value
             eval(keys[i]).classList.add('error') //give the item our helper error class
             eval(keys[i]).focus() //focus the item with the error state
             eval(keys[i]).blur() //blur it to help pop out the helper error message texts
@@ -399,7 +380,7 @@ submitButton.addEventListener('click', (e) => {
                 popUpModal()
             }
 
-            e.preventDefault() //stop the sunmit button from firing it's actions
+            e.preventDefault() //we have an error so we stop the submit button from firing it's default action
         }
         else{
             eval(keys[i]).classList.remove('error') //if this item passed its validation check, remove the error class
